@@ -9,3 +9,5 @@ public class Secret {
 	public static final String cKey = "Please enter your Twitter key";
 	public static final String cSecret = "Please enter your Twitter Secret";
 }
+
+Project Design:
