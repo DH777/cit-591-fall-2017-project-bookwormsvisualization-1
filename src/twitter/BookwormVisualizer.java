@@ -23,12 +23,14 @@ public class BookwormVisualizer {
 		System.out.println("Would you like to search a book that you're interested in? Y/N");
 		String selection = in.nextLine();
 		
-		//default
-		String term = "book";
+		String term = null;
 		
 		if(selection.equalsIgnoreCase("Y")) {
 			System.out.println("Please enter the book name");
 			term = in.nextLine();
+		} else {
+			//default
+			term = "book";
 		}
 		
 		BookwormLauncher bl = new BookwormLauncher(term);
