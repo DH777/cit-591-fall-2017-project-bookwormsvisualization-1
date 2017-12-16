@@ -15,9 +15,7 @@ public class BookwormVisualizer {
 	public static void main(String[] args) {
 		
 		System.out.println("You'll be able to see where your fellow book worms tweets! Hooray!");
-		System.out.println("Please wait, system processing...");
-		System.out.println("Please be patient. We are almost there!\n");
-
+		
 		//get user input of book name
 		Scanner in = new Scanner(System.in);
 		System.out.println("Would you like to search a book that you're interested in? Y/N");
@@ -34,6 +32,10 @@ public class BookwormVisualizer {
 		}
 		
 		BookwormLauncher bl = new BookwormLauncher(term);
+		
+		System.out.println("Please wait, system processing...");
+		System.out.println("Please be patient. We are almost there!\n");
+		
 		bl.runSearch();
 		in.close();
 	}

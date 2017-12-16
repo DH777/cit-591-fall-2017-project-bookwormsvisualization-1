@@ -29,29 +29,29 @@ public class BookwormLauncher {
 	 */
 	public void runSearch() {
 		
-		//Performs search and adds the lists of tweets to the Linked List
+		//create a new TwitterCaller object
 		int numberOfPages = 50;
 		TwitterCaller bookSearch = new TwitterCaller(searchTerm, numberOfPages);
 		
-		//Saves the tweets to a linked list
+		//run search and saves the tweets to a linked list
 		List<Status> queryTweets = new LinkedList<Status>();
 		queryTweets.addAll(bookSearch.query()); 
-		//Parses tweets and saves counts/tweets to the StateTweetTracker
+		
+		//Parses tweets and saves counts/tweets to the StateTweetCounter
 		TweetParser tweetsParser = new TweetParser(queryTweets);
 		StateTweetCounter parsedTweets = tweetsParser.getStatesList();
 
-		//This should take in the parsed tweets and make updates to JavaScript and HTML files as needed
+		//This should take in the parsed tweets and make updates to JS file as needed
 		JSWriter js = new JSWriter(parsedTweets, searchTerm);
-
-		js.outJS();
+		js.updateJS();
 
 		File htmlFile = new File("Book-worm-visualization.html");
 		try {
 			Desktop.getDesktop().browse(htmlFile.toURI());
 		} catch(FileNotFoundException fnfe) {
-			System.out.println("The HTML file is missing. Please find on your desktop and open.");
+			System.out.println("The HTML file is missing.");
 		} catch(Exception e) {
-			System.out.println("Other problem occured");
+			System.out.println("Other problem occured.");
 		}
 	}
 }

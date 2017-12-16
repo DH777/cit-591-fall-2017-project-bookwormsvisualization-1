@@ -1,13 +1,12 @@
 package twitter;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import twitter4j.*;
-
 
 /**
  * The class will parse the input tweets list from TwitterCaller by state.
@@ -15,8 +14,8 @@ import twitter4j.*;
  *
  */
 public class TweetParser {
-	private StateTweetCounter stateTweets;
 	private List<Status> tweets;
+	private StateTweetCounter stateTweets;
 	private Map<String, String> stateNameAbbre;
 
 	/**
@@ -32,10 +31,10 @@ public class TweetParser {
 
 	/**
 	 * Runs the parsing program to divide tweets by state
-	 * @return A StateTweetTracker object with tweets parsed by state
+	 * @return A StateTweetCounter object with tweets parsed by state
 	 */
 	public StateTweetCounter getStatesList() {
-		initializeStateMap();
+		initStateCrosswalk();
 		parseTweets();
 		return stateTweets;
 	}
@@ -44,18 +43,18 @@ public class TweetParser {
 	 * As the place will return abbreviation of the states,
 	 * the hashmap will help easy lookup.
 	 */
-	private void initializeStateMap() {
+	private void initStateCrosswalk() {
 		String[] states = { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
-				"Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+				"Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
 				"Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
 				"Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
 				"North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
 				"South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-				"West Virginia", "Wisconsin", "Wyoming" };
-		String[] stateAbbreviations = { "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL",
+				"West Virginia", "Wisconsin", "Wyoming", "Puerto Rico" };
+		String[] stateAbbreviations = { "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "D.C.", "FL", "GA", "HI", "ID", "IL",
 				"IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
 				"NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
-				"WV", "WI", "WY" };
+				"WV", "WI", "WY", "PR"};
 
 		for (int i = 0; i < 50; i += 1) {
 			stateNameAbbre.put(stateAbbreviations[i], states[i]);
@@ -63,27 +62,25 @@ public class TweetParser {
 	}
 	
 	/**
-	 * Parses the list of tweets. Ignores non-US as well as Washington D.C. tweets, 
-	 * as they do not belong to a US state.
+	 * Parses the list of tweets. Ignores non-US tweets.
 	 */
 	private void parseTweets() {
-		//List of state abbreviation patterns (i.e. "\bFL\b", "\bPA\b")
+		//List of state abbreviation patterns as tweets place use abbreviation.
 		List<Pattern> stateAbbrMatches = new LinkedList<Pattern>();
 		for (String stateAbbr : stateNameAbbre.keySet()) {
 			stateAbbrMatches.add(Pattern.compile("\\b" + stateAbbr + "\\b"));
 		}
 		
-		//List of state full name patterns (i.e. "\bFlorida\b", "\bPennsylvania\b")
+		//List of state full name patterns as tweets location can be identified with state full name.
 		List<Pattern> stateMatches = new LinkedList<Pattern>();
 		for (String state : stateNameAbbre.keySet()) {
 			stateMatches.add(Pattern.compile("\\b" + stateNameAbbre.get(state) + "\\b"));
 		}
 
 		Matcher match;
-		Pattern capital = Pattern.compile("D\\.C\\.");
 
 		for (Status tweet : tweets) {
-			boolean foundMatch = false; //used to jump to next tweet if match is found
+			boolean foundMatch = false; 
 			Place place = tweet.getPlace();
 			User user = tweet.getUser();
 			String userLocation = user.getLocation();
@@ -102,11 +99,6 @@ public class TweetParser {
 
 						}
 
-					}
-					//Weeds out state capital from fullName searches. 
-					match = capital.matcher(tweetLocation);
-					if (match.find()) {
-						foundMatch = true;
 					}
 
 					if (!foundMatch) {
@@ -128,11 +120,6 @@ public class TweetParser {
 
 				}
 			}
-			//Weeds out state capital from fullName searches. 
-			match = capital.matcher(userLocation);
-			if (match.find()) {
-				foundMatch = true;
-			}
 			
 			//Checks userLocation against every state abbreviation and full name pattern
 			if (!userLocation.isEmpty() && !foundMatch) {
@@ -148,7 +135,6 @@ public class TweetParser {
 					}
 
 				}
-
 				if (!foundMatch) {
 					for (Pattern statePattern : stateMatches) {
 						match = statePattern.matcher(userLocation);

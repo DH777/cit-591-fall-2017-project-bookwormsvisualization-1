@@ -10,67 +10,61 @@ import java.util.Scanner;
  */
 public class JSWriter {
 	
-	String[] states = { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
-			"Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", 
-			"Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", 
-			"Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", 
-			"New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
-			"Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
-			"South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", 
-			"West Virginia", "Wisconsin", "Wyoming" };
-	private StateTweetCounter stt;
-	String firstTerm;
-	String secondTerm;
+	String[] states = { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+			"Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+			"Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+			"Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
+			"North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
+			"South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+			"West Virginia", "Wisconsin", "Wyoming", "Puerto Rico" };
+	private StateTweetCounter stc;
+	String searchTerm;
 	
 	/**
-	 * The constructor for the JSWriter class
-	 * @param stt input StateTweetTracker object
-	 * @param firstTerm the first search term
-	 * @param secondTerm the second search term
+	 * The constructor
+	 * @param stt 
+	 * @param searchTerm
 	 */
-	public JSWriter(StateTweetCounter stt, String firstTerm){
-//		The class takes in inputs from both the parser class and user input in order to edit the .js file
-		this.stt =stt;
-		this.firstTerm = firstTerm;
+	public JSWriter(StateTweetCounter stc, String searchTerm){
+		this.stc =stc;
+		this.searchTerm = searchTerm;
 	}
+
 	/**
-	 * This method finds the state name in a js file and edits its tweet data based on values
-	 * from that particular state
-	 * @param line the line of text scanned by outJS
-	 * @return line the line of text with "ratio", "q1", "q2", "qc1", and "qc2" edited by corresponding value
+	 * This method update the JS file with total number of tweets.
+	 * @param line sample js line
+	 * @return updated js line with number of tweets
 	 */
-	public String writeJS(String line){
-//		Most lines in the .js file contains data for a state. Therefore, the state name is the first string to check for
+	private String writeJS(String line){
+		// the sample data use population density in the js file
 		for(int i = 0; i < states.length; i++ ){			
 			if (line.contains("density")){
 				line = line.replaceAll("\"density\":\\d+\\.?(\\d+)?","\"tweets\""+":" + 0 );
 		    } 
-			//When a state is identified, query data from StateTweetTracker is pulled
+			
 			if(line.contains(states[i])){
-//				System.out.println(states[i]);
-				int qc = stt.getQuery1Count(states[i]);
-//				The string "ratio" is replaced with the query value and "q1" and "q2" are replaced with the search terms
+				int qc = stc.getQueryCount(states[i]);
+				//update tweets number
 				if (line.contains("tweets")){
 					line = line.replaceAll("\"tweets\":\\d+\\.?(\\d+)?","\"tweets\""+":" + qc );
-			    return line;
-			    } 
+					return line;
+				} 
 			}
 		}
 	    return line;
 	}
 	
 	/**
-	 * This method takes an input file called "us-states.js" and calls writeJS to overwrite the instances of 
-	 * "ratio", "q1", "q2", "qc1", and "qc2". The result is a text-output file called "us-states-v2.js"
+	 * This method takes an input file of "us-states.js" and calls writeJS to overwrite. 
+	 * The result is a file called "us-states-v2.js".
 	 */
-	public void outJS(){
+	public void updateJS(){
 		try {
-//			The .js file is defined since the class will only be handling this particular file
 			File inputFile = new File("us-states.js");
 			Scanner in = new Scanner(inputFile);
-//			The output is saved in a different file to avoid overwriting
+			//The output is saved in a different file to avoid overwriting
 			PrintWriter out = new PrintWriter("us-states-v2.js");
-//			Each line in the .js file is iterated through to find the keywords and edited accordingly
+
 			while (in.hasNextLine()) {
 				String line = in.nextLine();	
 				line = writeJS(line);
@@ -80,8 +74,7 @@ public class JSWriter {
 			out.close();
 			
 		} catch (Exception e) {
-//			If an exception is encountered, a message is displayed to the user and the program shuts down
-			System.out.println("Error! Make sure us-states.js is in directory!");
+			System.out.println("us-states.js is not in the directory.");
 			System.exit(0);
 		}
 	}

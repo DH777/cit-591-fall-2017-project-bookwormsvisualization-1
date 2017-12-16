@@ -9,3 +9,6 @@ Secret.java
 
 #ignore all the .class file.
 .class
+
+#ignore output us-state-v2.js.
+us-states-v2.js

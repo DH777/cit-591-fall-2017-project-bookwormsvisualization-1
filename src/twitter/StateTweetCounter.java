@@ -16,7 +16,7 @@ public class StateTweetCounter {
 	private Map<String, StateTwitterProperty> stateTweets;
 
 	/**
-	 * The constructor for this class.
+	 * The constructor.
 	 */
 	public StateTweetCounter() {
 		stateTweets = new HashMap<String, StateTwitterProperty>();
@@ -45,7 +45,7 @@ public class StateTweetCounter {
 	/**
 	 * Returns a USAState object for the specified state name
 	 * @param state the state name to return
-	 * @return USAState object
+	 * @return StateTwitterProperty object
 	 */
 	public StateTwitterProperty getState(String state) {
 		return stateTweets.get(state);
@@ -55,16 +55,16 @@ public class StateTweetCounter {
 	 * Gets the number of the first search term results associated with the
 	 * specified state name
 	 * @param state the state name to lookup
-	 * @return the number of first search term hits
+	 * @return the number of search term hits
 	 */
-	public int getQuery1Count(String state) {
+	public int getQueryCount(String state) {
 		return getState(state).getTweetsCount();
 	}
 
 	/**
 	 * Gets the list of TaggedStatus objects associated with the specified state
 	 * @param state the state name to lookup
-	 * @return all TaggedStatus objects in that state
+	 * @return all Status objects (Tweets) in that state
 	 */
 	public List<Status> getTweets(String state) {
 		return getState(state).getTweets();
@@ -81,23 +81,17 @@ public class StateTweetCounter {
 	/**
 	 * Adds another StateTweetTracker to this object. Joins multiple searches
 	 * into one.
-	 *
-	 * @param parsedTweets the StateTweetTracker to add
-	 * @param queryIndex the search index (1 or 2) data that the other
-	 * StateTweetTracker holds
+	 * @param parsedTweets
 	 */
 	public void addParsedTweets(StateTweetCounter parsedTweets) {
-		for (String otherState : parsedTweets.getStates()) {
+		for (String state : parsedTweets.getStates()) {
 			int count = 0;
-			count = parsedTweets.getQuery1Count(otherState);
-
-
+			count = parsedTweets.getQueryCount(state);
+			
 			for (int i = 0; i < count; i++) {
-				this.getState(otherState).increaseTweetsCount();
+				this.getState(state).increaseTweetsCount();
 			}
-			this.getState(otherState).addTweetsList(parsedTweets.getTweets(otherState));
-
+			this.getState(state).addTweetsList(parsedTweets.getTweets(state));
 		}
 	}
-
 }
