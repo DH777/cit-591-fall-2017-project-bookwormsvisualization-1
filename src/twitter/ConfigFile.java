@@ -48,7 +48,7 @@ public class ConfigFile {
 	 * Passes in application token.
 	 * @return Twitter object
 	 */
-	public static Twitter getTwitter() {
+	public static Twitter createTwitterObject() {
 		OAuth2Token token = createFactory();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
