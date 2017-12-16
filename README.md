@@ -13,6 +13,6 @@ public class Secret {
 
 ## Project Description
 This project can help you bookworm find your fellow bookworms! Do you want to find out where your fellow bookworms live so that you can also move to a closer place? There might be more bookclubs if there are more bookworms. You could even open your own bookclubs! How exciting!
-![screen shot 2017-12-13 at 6 06 50 pm](https://user-images.githubusercontent.com/6525504/34066806-4325076e-e1e3-11e7-8069-ae84c9a5c6b8.png)
+![screen shot 2017-12-16 at 9 12 15 am](https://user-images.githubusercontent.com/6525504/34071239-49b9818c-e241-11e7-914b-11823a9cf1ae.png)
 
 ## Project Design - CRC

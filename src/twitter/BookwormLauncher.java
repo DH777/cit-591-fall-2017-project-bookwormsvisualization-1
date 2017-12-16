@@ -45,12 +45,7 @@ public class BookwormLauncher {
 
 		js.outJS();
 
-
-		HTMLWriter html = new HTMLWriter(searchTerm);
-
-		html.outHTML();
-
-		File htmlFile = new File("Book-worm-vitialization.html");
+		File htmlFile = new File("Book-worm-visualization.html");
 		try {
 			Desktop.getDesktop().browse(htmlFile.toURI());
 		} catch(FileNotFoundException fnfe) {
