@@ -1,0 +1,21 @@
+Name of the project:
+Bookworms Visualization
+
+Description of the project:
+This project can help you bookworm find your fellow bookworms! Do you want to find out where your fellow bookworms live so that you can also move to a closer place? There might be more bookclubs if there are more bookworms. You could even open your own bookclubs! How exciting!
+
+Work breakdown:
+Lisa (Siyuan Shen):
+1. Project proposal;
+2. Modified the leaflet example html file for this project;
+3. Wrote README.md and summary.txt;
+4. Built the java classes in the twitter folder.
+Donghan Zhang:
+1. Project proposal;
+2. JUnit test;
+3. EclEmma coverage report.
+Prashant Kumar:
+1. Project proposal.
+
+Link to github repo:
+https://github.com/cit-upenn/cit-591-fall-2017-project-bookwormsvisualization.git
