@@ -22,6 +22,6 @@ This project can help you bookworm find your fellow bookworms! Do you want to fi
 ## Unit Testing & Coverage Analysis
 finished 15 test cases which included 6 classes;
 
-code coverage 93%, branch coverage 84%;
+code coverage 93%, branch coverage 84% (6 missed methods are mostly getters);
 
 All test cases passed!
