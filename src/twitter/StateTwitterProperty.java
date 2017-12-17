@@ -53,13 +53,12 @@ public class StateTwitterProperty {
 	 * @param tweets list of Status objects
 	 */
 	public void addTweetsList(List<Status> tweets) {	 
-		this.tweets.addAll(tweets);
+		tweets.addAll(tweets);
 	}
 	
 	/**
-	 * Add a single Status object to the State, specifying which search term it matched
-	 * @param tweet the Status object
-	 * @param boo1 true if search term 1 was a match
+	 * Add one tweet into the list
+	 * @param tweet the tweet to be added
 	 */
 	public void addTweet(Status tweet) { 
 		tweets.add(tweet);

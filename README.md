@@ -18,3 +18,10 @@ This project can help you bookworm find your fellow bookworms! Do you want to fi
 ## Project Design - CRC
 ![screen shot 2017-12-16 at 10 16 45 am](https://user-images.githubusercontent.com/6525504/34071797-511bdd72-e24a-11e7-8d14-f58651e87a23.png)
 ![screen shot 2017-12-16 at 10 17 00 am](https://user-images.githubusercontent.com/6525504/34071798-5303a6d8-e24a-11e7-99c4-ebf41bd2f7cc.png)
+
+## Unit Testing & Coverage Analysis
+finished 15 test cases which included 6 classes;
+
+code coverage 93%, branch coverage 84%;
+
+All test cases passed!
