@@ -10,10 +10,14 @@ Lisa (Siyuan Shen):
 2. Modified the leaflet example html file for this project;
 3. Wrote README.md and summary.txt;
 4. Built the java classes in the twitter folder.
+
 Donghan Zhang:
 1. Project proposal;
-2. JUnit test;
-3. EclEmma coverage report.
+2. JUnit test cases generation;
+3. EclEmma set-up & coverage analysis;
+4. Wrote test coverage report;
+5. Wrote README.md and summary.txt;
+
 Prashant Kumar:
 1. Project proposal.
 
