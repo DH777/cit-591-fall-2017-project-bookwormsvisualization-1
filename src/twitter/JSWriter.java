@@ -35,7 +35,7 @@ public class JSWriter {
 	 * @param line sample js line
 	 * @return updated js line with number of tweets
 	 */
-	private String writeJS(String line){
+	public String writeJS(String line){
 		// the sample data use population density in the js file
 		for(int i = 0; i < states.length; i++ ){			
 			if (line.contains("density")){
