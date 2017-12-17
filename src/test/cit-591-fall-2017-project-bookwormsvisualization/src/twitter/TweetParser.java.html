@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TweetParser.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">BookwormLauncherTest (2017-12-17 15:28:45)</a> &gt; <a href="../../index.html" class="el_group">cit-591-fall-2017-project-bookwormsvisualization</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">twitter</a> &gt; <span class="el_source">TweetParser.java</span></div><h1>TweetParser.java</h1><pre class="source lang-java linenums">package twitter;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import twitter4j.*;
+
+/**
+ * The class will parse the input tweets list from TwitterCaller by state.
+ * @author lisa
+ *
+ */
+public class TweetParser {
+	private List&lt;Status&gt; tweets;
+	private StateTweetCounter stateTweets;
+	private Map&lt;String, String&gt; stateNameAbbre;
+
+	/**
+	 * The constructor for this class.
+	 * @param tweets The list of Twitter4J Status objects to parse
+	 * @param queryIndex Either the first or second search term
+	 */
+<span class="fc" id="L26">	public TweetParser(List&lt;Status&gt; tweets) {</span>
+<span class="fc" id="L27">		this.tweets = tweets;</span>
+<span class="fc" id="L28">		stateTweets = new StateTweetCounter();</span>
+<span class="fc" id="L29">		stateNameAbbre = new HashMap&lt;String, String&gt;();	</span>
+<span class="fc" id="L30">	}</span>
+
+	/**
+	 * Runs the parsing program to divide tweets by state
+	 * @return A StateTweetCounter object with tweets parsed by state
+	 */
+	public StateTweetCounter getStatesList() {
+<span class="fc" id="L37">		initStateCrosswalk();</span>
+<span class="fc" id="L38">		parseTweets();</span>
+<span class="fc" id="L39">		return stateTweets;</span>
+	}
+
+	/**
+	 * As the place will return abbreviation of the states,
+	 * the hashmap will help easy lookup.
+	 */
+	private void initStateCrosswalk() {
+<span class="fc" id="L47">		String[] states = { &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;California&quot;, &quot;Colorado&quot;, &quot;Connecticut&quot;,</span>
+<span class="fc" id="L48">				&quot;Delaware&quot;, &quot;District of Columbia&quot;, &quot;Florida&quot;, &quot;Georgia&quot;, &quot;Hawaii&quot;, &quot;Idaho&quot;, &quot;Illinois&quot;, &quot;Indiana&quot;, &quot;Iowa&quot;, &quot;Kansas&quot;,</span>
+<span class="fc" id="L49">				&quot;Kentucky&quot;, &quot;Louisiana&quot;, &quot;Maine&quot;, &quot;Maryland&quot;, &quot;Massachusetts&quot;, &quot;Michigan&quot;, &quot;Minnesota&quot;, &quot;Mississippi&quot;,</span>
+<span class="fc" id="L50">				&quot;Missouri&quot;, &quot;Montana&quot;, &quot;Nebraska&quot;, &quot;Nevada&quot;, &quot;New Hampshire&quot;, &quot;New Jersey&quot;, &quot;New Mexico&quot;, &quot;New York&quot;,</span>
+<span class="fc" id="L51">				&quot;North Carolina&quot;, &quot;North Dakota&quot;, &quot;Ohio&quot;, &quot;Oklahoma&quot;, &quot;Oregon&quot;, &quot;Pennsylvania&quot;, &quot;Rhode Island&quot;,</span>
+<span class="fc" id="L52">				&quot;South Carolina&quot;, &quot;South Dakota&quot;, &quot;Tennessee&quot;, &quot;Texas&quot;, &quot;Utah&quot;, &quot;Vermont&quot;, &quot;Virginia&quot;, &quot;Washington&quot;,</span>
+<span class="fc" id="L53">				&quot;West Virginia&quot;, &quot;Wisconsin&quot;, &quot;Wyoming&quot;, &quot;Puerto Rico&quot; };</span>
+<span class="fc" id="L54">		String[] stateAbbreviations = { &quot;AL&quot;, &quot;AK&quot;, &quot;AZ&quot;, &quot;AR&quot;, &quot;CA&quot;, &quot;CO&quot;, &quot;CT&quot;, &quot;DE&quot;, &quot;D.C.&quot;, &quot;FL&quot;, &quot;GA&quot;, &quot;HI&quot;, &quot;ID&quot;, &quot;IL&quot;,</span>
+<span class="fc" id="L55">				&quot;IN&quot;, &quot;IA&quot;, &quot;KS&quot;, &quot;KY&quot;, &quot;LA&quot;, &quot;ME&quot;, &quot;MD&quot;, &quot;MA&quot;, &quot;MI&quot;, &quot;MN&quot;, &quot;MS&quot;, &quot;MO&quot;, &quot;MT&quot;, &quot;NE&quot;, &quot;NV&quot;, &quot;NH&quot;, &quot;NJ&quot;,</span>
+<span class="fc" id="L56">				&quot;NM&quot;, &quot;NY&quot;, &quot;NC&quot;, &quot;ND&quot;, &quot;OH&quot;, &quot;OK&quot;, &quot;OR&quot;, &quot;PA&quot;, &quot;RI&quot;, &quot;SC&quot;, &quot;SD&quot;, &quot;TN&quot;, &quot;TX&quot;, &quot;UT&quot;, &quot;VT&quot;, &quot;VA&quot;, &quot;WA&quot;,</span>
+<span class="fc" id="L57">				&quot;WV&quot;, &quot;WI&quot;, &quot;WY&quot;, &quot;PR&quot;};</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (int i = 0; i &lt; 50; i += 1) {</span>
+<span class="fc" id="L60">			stateNameAbbre.put(stateAbbreviations[i], states[i]);</span>
+		}
+<span class="fc" id="L62">	}</span>
+	
+	/**
+	 * Parses the list of tweets. Ignores non-US tweets.
+	 */
+	private void parseTweets() {
+		//List of state abbreviation patterns as tweets place use abbreviation.
+<span class="fc" id="L69">		List&lt;Pattern&gt; stateAbbrMatches = new LinkedList&lt;Pattern&gt;();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		for (String stateAbbr : stateNameAbbre.keySet()) {</span>
+<span class="fc" id="L71">			stateAbbrMatches.add(Pattern.compile(&quot;\\b&quot; + stateAbbr + &quot;\\b&quot;));</span>
+		}
+		
+		//List of state full name patterns as tweets location can be identified with state full name.
+<span class="fc" id="L75">		List&lt;Pattern&gt; stateMatches = new LinkedList&lt;Pattern&gt;();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		for (String state : stateNameAbbre.keySet()) {</span>
+<span class="fc" id="L77">			stateMatches.add(Pattern.compile(&quot;\\b&quot; + stateNameAbbre.get(state) + &quot;\\b&quot;));</span>
+		}
+
+		Matcher match;
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		for (Status tweet : tweets) {</span>
+<span class="fc" id="L83">			boolean foundMatch = false; </span>
+<span class="fc" id="L84">			Place place = tweet.getPlace();</span>
+<span class="fc" id="L85">			User user = tweet.getUser();</span>
+<span class="fc" id="L86">			String userLocation = user.getLocation();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">			if (place != null) {</span>
+<span class="fc" id="L88">				String tweetLocation = place.getFullName();</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">				if (!tweetLocation.isEmpty()) {</span>
+					//Checks tweetLocation against every state abbreviation and full name pattern
+<span class="fc bfc" id="L91" title="All 2 branches covered.">					for (Pattern stateAbbrPattern : stateAbbrMatches) {</span>
+<span class="fc" id="L92">						match = stateAbbrPattern.matcher(tweetLocation);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">						if (match.find()) {</span>
+<span class="fc" id="L94">							String state = stateAbbrPattern.toString().substring(2, 4);</span>
+
+<span class="fc" id="L96">							stateTweets.getState(stateNameAbbre.get(state)).increaseTweetsCount();</span>
+<span class="fc" id="L97">							stateTweets.getState(stateNameAbbre.get(state)).addTweet(tweet);</span>
+<span class="fc" id="L98">							foundMatch = true;</span>
+
+						}
+
+					}
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">					if (!foundMatch) {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">						for (Pattern statePattern : stateMatches) {</span>
+<span class="fc" id="L106">							match = statePattern.matcher(tweetLocation);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">							if (match.find()) {</span>
+<span class="fc" id="L108">								String state = statePattern.toString();</span>
+<span class="fc" id="L109">								int len = state.length();</span>
+<span class="fc" id="L110">								state = state.substring(2, len - 2);</span>
+
+
+<span class="fc" id="L113">								stateTweets.getState(state).increaseTweetsCount();</span>
+<span class="fc" id="L114">								stateTweets.getState(state).addTweet(tweet);</span>
+<span class="fc" id="L115">								foundMatch = true;</span>
+
+							}
+						}
+					}
+
+				}
+			}
+			
+			//Checks userLocation against every state abbreviation and full name pattern
+<span class="fc bfc" id="L125" title="All 4 branches covered.">			if (!userLocation.isEmpty() &amp;&amp; !foundMatch) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">				for (Pattern stateAbbrPattern : stateAbbrMatches) {</span>
+<span class="fc" id="L127">					match = stateAbbrPattern.matcher(userLocation);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">					if (match.find()) {</span>
+<span class="fc" id="L129">						String state = stateAbbrPattern.toString().substring(2, 4);</span>
+
+<span class="fc" id="L131">						stateTweets.getState(stateNameAbbre.get(state)).increaseTweetsCount();</span>
+<span class="fc" id="L132">						stateTweets.getState(stateNameAbbre.get(state)).addTweet(tweet);</span>
+<span class="fc" id="L133">						foundMatch = true;</span>
+
+					}
+
+				}
+<span class="fc bfc" id="L138" title="All 2 branches covered.">				if (!foundMatch) {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">					for (Pattern statePattern : stateMatches) {</span>
+<span class="fc" id="L140">						match = statePattern.matcher(userLocation);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">						if (match.find()) {</span>
+<span class="fc" id="L142">							String state = statePattern.toString();</span>
+<span class="fc" id="L143">							int len = state.length();</span>
+<span class="fc" id="L144">							state = state.substring(2, len - 2);</span>
+
+						
+<span class="fc" id="L147">							stateTweets.getState(state).increaseTweetsCount();</span>
+<span class="fc" id="L148">							stateTweets.getState(state).addTweet(tweet);</span>
+<span class="fc" id="L149">							foundMatch = true;</span>
+
+						}
+					}
+				}
+
+			}
+
+		}
+
+<span class="fc" id="L159">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>BookwormLauncherTest (2017-12-17 15:28:45)</div></body></html>
